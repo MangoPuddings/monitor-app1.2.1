@@ -13,6 +13,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 8
+        multiDexEnabled true
         versionName "三得北斗定位 - 1.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -38,4 +39,6 @@ dependencies {
     compile files('libs/nineoldandroids-2.4.0.jar')
     compile files('libs/jackson-all-1.7.6.jar')
     compile files('libs/universal-image-loader-1.9.2-SNAPSHOT-with-sources.jar')
+    compile files('libs/AMap_Search_V5.1.0_20170517.jar')
+    compile 'com.android.support:multidex:1.0.0'
 }

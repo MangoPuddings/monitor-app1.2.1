@@ -37,6 +37,11 @@ import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.onlydoone.busposition.R;
 import com.onlydoone.busposition.Utils.dialog.Dialog_Vehicle_Trail;
 import com.onlydoone.busposition.Utils.http.HttpCallbackListener;
@@ -89,6 +94,8 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
     private String gps_time;
     //获取车辆状态
     private String state;
+    //获取车辆位置信息
+    private String location;
 
 
     /**
@@ -121,9 +128,13 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
 
     private TextView mLocationErrText;
     /**
-     * 车辆经纬度
+     * 车辆经纬度(gps坐标)
      */
     private LatLng latlng;
+    /**
+     * 车辆经纬度（高德坐标）
+     */
+    private LatLng desLatLng;
     /**
      * 车辆位置信息图标
      */
@@ -209,7 +220,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
                             final String longitude = jsonObjectVehicles.getString("longitude");
                             //获取方位角度
                             String angle = jsonObjectVehicles.getString("angle");
-                            if (angle.equals("")){
+                            if (angle.equals("")) {
                                 angle = "0";
                                 //如果返回状态码为-1，则车辆不存在
                                 Toast toast = Toast.makeText(getActivity(), "查询车辆不存在", Toast.LENGTH_LONG);
@@ -234,7 +245,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
                             // sourceLatLng待转换坐标点 LatLng类型
                             converter.coord(latlng);
                             // 执行转换操作
-                            LatLng desLatLng = converter.convert();
+                            desLatLng = converter.convert();
                             //设置marker的方位角度
                             ang = 360 - ang;
                             marker.setRotateAngle(ang);
@@ -246,13 +257,13 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
                                 public boolean onMarkerClick(Marker marker) {
                                     //请求服务器数据
                                     if (!isTimerVehicleState) {
-                                        httpPostVehicleState(sp.getString("URL","") + ConstantClass.URL_VEHICLE_STATE, vehicleid);
+                                        httpPostVehicleState(sp.getString("URL", "") + ConstantClass.URL_VEHICLE_STATE, vehicleid);
                                         isTimerVehicleState = true;
                                         isMarker = true;
                                     } else {
                                         timer_vehicleState.cancel();
                                         timer_vehicleState.purge();
-                                        httpPostVehicleState(sp.getString("URL","") + ConstantClass.URL_VEHICLE_STATE, vehicleid);
+                                        httpPostVehicleState(sp.getString("URL", "") + ConstantClass.URL_VEHICLE_STATE, vehicleid);
                                     }
                                     return false;
                                 }
@@ -300,6 +311,9 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
                     }
 
                     break;
+                case 2:
+                    marker.showInfoWindow();
+                    break;
                 case -1:
                     vehicle_dialog.hide();
                     Toast.makeText(getActivity(), msg.obj.toString(), Toast.LENGTH_LONG).show();
@@ -318,7 +332,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
             search_data = new ArrayList<Search_Data>();
             for (int i = 0; i < jsonArrayVehicles.length(); i++) {
                 JSONObject jsonObjectVehicles = (JSONObject) jsonArrayVehicles.get(i);
-                Search_Data sd = new Search_Data(jsonObjectVehicles.getString("vehicleid"),jsonObjectVehicles.getString("sim_no"));
+                Search_Data sd = new Search_Data(jsonObjectVehicles.getString("vehicleid"), jsonObjectVehicles.getString("sim_no"));
                 search_data.add(sd);
             }
         } catch (JSONException e) {
@@ -354,6 +368,42 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
                             //获取车辆是否存在的状态码 0（存在） -1（不存在）
                             String result = jsonObject.getString("result");
                             if (result.equals("0")) {
+                                //高德逆地理编码
+                                GeocodeSearch geocodeSearch = new GeocodeSearch(getActivity());
+                                //高德逆地理编码监听事件
+                                geocodeSearch.setOnGeocodeSearchListener(new GeocodeSearch.OnGeocodeSearchListener() {
+                                    @Override
+                                    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+                                        //回调方法,获取地址描述信息, i == 1000表示请求成功
+                                        if (i == 1000) {
+                                            if (regeocodeResult != null && regeocodeResult.getRegeocodeAddress() != null
+                                                    && regeocodeResult.getRegeocodeAddress().getFormatAddress() != null) {
+                                                //设置位置地址信息
+                                                location = regeocodeResult.getRegeocodeAddress().getFormatAddress();
+                                                Message msg = new Message();
+                                                msg.what = 2;
+                                                handler.sendMessage(msg);
+                                            }else {
+                                                location = "逆地理编码失败";
+                                            }
+                                        }else {
+                                            //失败，显示状态码
+                                            location = String.valueOf(i);
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
+                                    }
+                                });
+                                //高德逆地理编码请求
+                                LatLonPoint latLonPoint = new LatLonPoint(desLatLng.latitude, desLatLng.longitude);
+                                //第一个参数为latlng，第二个参数为表示范围多少米，第三个参数表示是火系坐标系，还是GPS原生坐标系
+                                RegeocodeQuery query = new RegeocodeQuery(latLonPoint, 100, GeocodeSearch.AMAP);
+                                geocodeSearch.getFromLocationAsyn(query);
+
                                 //如果返回状态码为0，则解析车辆信息
                                 JSONArray jsonArrayVehicles = jsonObject.getJSONArray("vehicles");
                                 JSONObject jsonObjectVehicles = (JSONObject) jsonArrayVehicles.opt(0);
@@ -380,6 +430,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
                                 //获取车辆状态
                                 state = jsonObjectVehicles.getString("state");
 
+                                marker.showInfoWindow();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -445,7 +496,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), MonitorOwnerSearch.class);
                 Bundle bundle = new Bundle();
-                bundle.putString("class","inquiry");
+                bundle.putString("class", "inquiry");
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -620,7 +671,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         params.put("vehicleNo", mSearch_content);
         params.put("id_owner", sp.getString("id_owner", ""));
         //设置请求地址
-        final String mUrl = sp.getString("URL","") + ConstantClass.URL_VEHICLE_VAGUE;
+        final String mUrl = sp.getString("URL", "") + ConstantClass.URL_VEHICLE_VAGUE;
         HttpUtil.sendHttpRequestForPost(mUrl, params, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
@@ -661,12 +712,12 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         clear();
         //查询服务器车辆位置信息  第一次进入程序isTimerVehicle默认为ture，可以开启新定时任务，之后isTimer为false则需要先关闭定时任务
         if (!isTimerVehicle) {
-            findVehicle(sp.getString("URL","") + ConstantClass.URL_VEHICLE, search_content);
+            findVehicle(sp.getString("URL", "") + ConstantClass.URL_VEHICLE, search_content);
             isTimerVehicle = true;
         } else {
             timer_vehicle.cancel();
             timer_vehicle.purge();
-            findVehicle(sp.getString("URL","") + ConstantClass.URL_VEHICLE, search_content);
+            findVehicle(sp.getString("URL", "") + ConstantClass.URL_VEHICLE, search_content);
         }
 
         //当切换车辆时或再次点击搜索按钮时，并且isMarker为true时执行该方法
@@ -692,6 +743,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         queuename = null;
         gps_time = null;
         state = null;
+        location = null;
     }
 
     /**
@@ -812,7 +864,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         marker.setAnchor(0.75f, 0.5f);
         marker.setTitle("1");
 
-        if (!ConstantClass.vehicleNO.equals("")){
+        if (!ConstantClass.vehicleNO.equals("")) {
             tv_search.setText(ConstantClass.vehicleNO);
         }
         //获取用户输入的车牌号
@@ -820,12 +872,12 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         if (!(search_content.equals(""))) {
             //查询服务器车辆位置信息  进入程序isTimer默认为ture，可以开启新定时任务，之后isTimer为false则需要先关闭定时任务
             if (!isTimerVehicle) {
-                findVehicle(sp.getString("URL","") + ConstantClass.URL_VEHICLE, search_content);
+                findVehicle(sp.getString("URL", "") + ConstantClass.URL_VEHICLE, search_content);
                 isTimerVehicle = true;
             } else {
                 timer_vehicle.cancel();
                 timer_vehicle.purge();
-                findVehicle(sp.getString("URL","") + ConstantClass.URL_VEHICLE, search_content);
+                findVehicle(sp.getString("URL", "") + ConstantClass.URL_VEHICLE, search_content);
             }
             //如果marker等于true则开启新定时器
 //            if (isMarker) {
@@ -882,6 +934,7 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         TextView inforwindow_queuename = (TextView) infoWindow.findViewById(R.id.inforwindow_queuename);
         TextView inforwindow_GPS_time = (TextView) infoWindow.findViewById(R.id.inforwindow_GPS_time);
         TextView inforwindow_state = (TextView) infoWindow.findViewById(R.id.inforwindow_state);
+        TextView inforwindow_location = (TextView) infoWindow.findViewById(R.id.inforwindow_location);
 
         ImageView inforwindow_monitor = (ImageView) infoWindow.findViewById(R.id.inforwindow_monitor);
         ImageView inforwindow_break = (ImageView) infoWindow.findViewById(R.id.inforwindow_break);
@@ -909,6 +962,8 @@ public class Inquiry extends Fragment implements LocationSource, AMapLocationLis
         inforwindow_GPS_time.setText(gps_time);
         //车辆状态
         inforwindow_state.setText(state);
+        //车辆位置地址信息
+        inforwindow_location.setText(location);
 
         /**
          * marker窗体返回按钮点击监听事件

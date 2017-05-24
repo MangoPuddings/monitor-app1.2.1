@@ -277,6 +277,31 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="left|center"
+                android:text="位置："
+                android:textSize="12dp" />
+
+            <TextView
+                android:id="@+id/inforwindow_location"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="left|center"
+                android:text="000"
+                android:textColor="#15B2DB"
+                android:textSize="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="30dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
