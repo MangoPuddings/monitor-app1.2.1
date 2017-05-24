@@ -20,6 +20,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.onlydoone.busposition.R;
+import com.onlydoone.busposition.Utils.ACache;
 import com.onlydoone.busposition.Utils.ToastUtils;
 import com.onlydoone.busposition.Utils.http.HttpCallbackListener;
 import com.onlydoone.busposition.Utils.http.HttpUtil;
@@ -43,10 +44,10 @@ import java.util.Map;
 /**
  * Created by zhaohui on 2017/2/20.
  */
-
 public class Date extends Fragment {
     public ObjectMapper objectMapper = new ObjectMapper();
     private Context mContext;
+    private static ACache mCache;
     /**
      * 初始话用户信息文件
      */
@@ -79,6 +80,12 @@ public class Date extends Fragment {
                         Map map = objectMapper.readValue(msg.obj.toString(), new TypeReference<Map>() {
                         });
                         if (map.get("result").equals("0")) {
+                            //是否有缓存数据，如果等于null则写入缓存
+                            if (mCache.getAsString("data_miles" + page) == null) {
+                                //读取缓存数据
+                                //写入缓存
+                                mCache.put("data_miles", msg.obj.toString(), ConstantClass.aCacheTime);
+                            }
                             String[] date = new String[8];
                             for (int d = 0; d < 8; d++) {
                                 Calendar calendar = Calendar.getInstance();
@@ -162,7 +169,10 @@ public class Date extends Fragment {
                         //获取车辆是否存在的状态码 0（存在） -1（不存在）
                         String result = jsonObjects.getString("result");
                         if (result.equals("0")) {
-
+                            if (mCache.getAsString("data_miles" + page) == null) {
+                                //读取缓存数据 //写入缓存
+                                mCache.put("data_miles" + (page - 20), msg.obj.toString(), ConstantClass.aCacheTime);
+                            }
                             //如果返回状态码为0，则解析车辆信息
                             JSONArray jsonArrayVehicles = jsonObjects.getJSONArray("vehicles");
                             List<Map<String, String>> datas = new ArrayList<Map<String, String>>();
@@ -191,7 +201,7 @@ public class Date extends Fragment {
                         } else {
                             if (ConstantClass.isFootitemData == 0) {
                                 sendMsg();
-                                ToastUtils.showToast(getActivity(),"已加载全部数据");
+                                ToastUtils.showToast(getActivity(), "已加载全部数据");
                                 mListView.removeFooterView(mFooterView);
                                 ConstantClass.isFootitemData = -1;
                             }
@@ -222,7 +232,6 @@ public class Date extends Fragment {
         msg.what = 3;
         handler.sendMessage(msg);
     }
-
 
     @Nullable
     @Override
@@ -347,70 +356,87 @@ public class Date extends Fragment {
      * 获取服务器车辆里程数据
      */
     private void getHttpdate(int page, int rows) {
-        //读取用户登录状态
-        sp = view.getContext().getSharedPreferences("login_state", view.getContext().MODE_PRIVATE);
-        //设置请求参数
-        final Map<String, Object> params = new HashMap<String, Object>();
+        mCache = ACache.get(getActivity());
+        if (mCache.getAsString("data_miles") != null) {
+            //读取缓存数据，更新ui
+            Message msg = new Message();
+            msg.obj = mCache.getAsString("data_miles");
+            msg.what = 0;
+            handler.sendMessage(msg);
+        } else {   //本地缓存数据不存在或者过期，则请求服务器数据
+            //读取用户登录状态
+            sp = view.getContext().getSharedPreferences("login_state", view.getContext().MODE_PRIVATE);
+            //设置请求参数
+            final Map<String, Object> params = new HashMap<String, Object>();
 
-        params.put("id_owner", sp.getString("id_owner", ""));
-        //按天查询
-        params.put("type", "1");
-        //从第几条查询
-        params.put("page", page);
-        //查询几条数据
-        params.put("rows", rows);
+            params.put("id_owner", sp.getString("id_owner", ""));
+            //按天查询
+            params.put("type", "1");
+            //从第几条查询
+            params.put("page", page);
+            //查询几条数据
+            params.put("rows", rows);
 
-        HttpUtil.sendHttpRequestForPost(sp.getString("URL","") + ConstantClass.URL_VEHICLE_MILES, params, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                Message msg = new Message();
-                msg.obj = response;
-                msg.what = 0;
-                handler.sendMessage(msg);
-            }
+            HttpUtil.sendHttpRequestForPost(sp.getString("URL", "") + ConstantClass.URL_VEHICLE_MILES, params, new HttpCallbackListener() {
+                @Override
+                public void onFinish(String response) {
+                    Message msg = new Message();
+                    msg.obj = response;
+                    msg.what = 0;
+                    handler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(Exception e) {
-                Message msg = new Message();
-                msg.what = -1;
-                handler.sendMessage(msg);
-            }
-        });
+                @Override
+                public void onError(Exception e) {
+                    Message msg = new Message();
+                    msg.what = -1;
+                    handler.sendMessage(msg);
+                }
+            });
+        }
     }
 
     /**
      * 获取服务器车辆里程数据(分页加载数据）
      */
     private void getHttpdates(int page, int rows) {
-        //读取用户登录状态
-        sp = view.getContext().getSharedPreferences("login_state", view.getContext().MODE_PRIVATE);
-        //设置请求参数
-        final Map<String, Object> params = new HashMap<String, Object>();
+        if (mCache.getAsString("data_miles" + page) != null) {
+            //读取缓存数据，更新ui
+            Message msg = new Message();
+            msg.obj = mCache.getAsString("data_miles" + page);
+            msg.what = 2;
+            handler.sendMessage(msg);
+        } else {
+            //读取用户登录状态
+            sp = view.getContext().getSharedPreferences("login_state", view.getContext().MODE_PRIVATE);
+            //设置请求参数
+            final Map<String, Object> params = new HashMap<String, Object>();
 
-        params.put("id_owner", sp.getString("id_owner", ""));
-        //按天查询
-        params.put("type", "1");
-        //从第几条查询
-        params.put("page", page);
-        //查询几条数据
-        params.put("rows", rows);
+            params.put("id_owner", sp.getString("id_owner", ""));
+            //按天查询
+            params.put("type", "1");
+            //从第几条查询
+            params.put("page", page);
+            //查询几条数据
+            params.put("rows", rows);
 
-        HttpUtil.sendHttpRequestForPost(sp.getString("URL","")+ ConstantClass.URL_VEHICLE_MILES, params, new HttpCallbackListener() {
-            @Override
-            public void onFinish(String response) {
-                Message msg = new Message();
-                msg.obj = response;
-                msg.what = 2;
-                handler.sendMessage(msg);
-            }
+            HttpUtil.sendHttpRequestForPost(sp.getString("URL", "") + ConstantClass.URL_VEHICLE_MILES, params, new HttpCallbackListener() {
+                @Override
+                public void onFinish(String response) {
+                    Message msg = new Message();
+                    msg.obj = response;
+                    msg.what = 2;
+                    handler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(Exception e) {
-                Message msg = new Message();
-                msg.what = -1;
-                handler.sendMessage(msg);
-            }
-        });
+                @Override
+                public void onError(Exception e) {
+                    Message msg = new Message();
+                    msg.what = -1;
+                    handler.sendMessage(msg);
+                }
+            });
+        }
     }
 
     public void addHViews(final CHScrollViewDate hScrollView) {

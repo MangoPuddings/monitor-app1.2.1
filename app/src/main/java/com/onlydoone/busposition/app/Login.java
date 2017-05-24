@@ -91,21 +91,28 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
                                 editor.putString("switch","close");
                             }
                             editor.putString("id_owner", id_owner);
-                            editor.putString("username", username_et.getText().toString().trim());
                             editor.putString("userName",jsonObjectVehicles.getString("userName"));
-                            editor.putString("password", "");
+                            //如果选择登录的是定位平台，保存定位平台的账号密码，否则保存油补平台的账号密码
                             if (radioButton_location.isChecked()){
                                 editor.putString("platform","true" );
+                                editor.putString("username_location", username_et.getText().toString().trim());
+                                editor.putString("password_location", "");
+                                //如果选择记住密码，则保存密码
+                                if (password_remember.isChecked()) {
+                                    editor.putString("password_location", password_et.getText().toString().trim());
+                                }
                             }else {
                                 editor.putString("platform", "false");
+                                editor.putString("username_oilFill", username_et.getText().toString().trim());
+                                editor.putString("password_oilFill", "");
+                                //如果选择记住密码，则保存密码
+                                if (password_remember.isChecked()) {
+                                    editor.putString("password_oilFill", password_et.getText().toString().trim());
+                                }
                             }
 
                             editor.commit();
-                            //如果选择记住密码，则设置username为用户名
-                            if (password_remember.isChecked()) {
-                                editor.putString("password", password_et.getText().toString().trim());
-                                editor.commit();
-                            }
+
 
                             Intent intent = new Intent(Login.this,Main.class);
                             startActivity(intent);
@@ -242,6 +249,9 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
                 editor1 = sp.edit();
                 editor1.putString("URL", ConstantClass.oil_fill);
                 editor1.commit();
+                //设置油补平台的账号密码
+                username_et.setText(sp.getString("username_oilFill", ""));
+                password_et.setText(sp.getString("password_oilFill", ""));
                 //ConstantClass.URL= ConstantClass.oil_fill;
             }else {
                 radioButton_location.setChecked(true);
@@ -250,6 +260,9 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
                 editor = sp.edit();
                 editor.putString("URL", ConstantClass.location);
                 editor.commit();
+                //设置定位平台的账号密码
+                username_et.setText(sp.getString("username_location", ""));
+                password_et.setText(sp.getString("password_location", ""));
                 //ConstantClass.URL = ConstantClass.location;
             }
         }else {
@@ -259,6 +272,9 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
             editor = sp.edit();
             editor.putString("URL", ConstantClass.location);
             editor.commit();
+            //设置定位平台的账号密码
+            username_et.setText(sp.getString("username_location", ""));
+            password_et.setText(sp.getString("password_location", ""));
             //ConstantClass.URL = ConstantClass.location;
         }
         //radioGroup   Checked改变监听事件
@@ -272,6 +288,9 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
                             editor = sp.edit();
                             editor.putString("URL", ConstantClass.location);
                             editor.commit();
+                            //设置定位平台的账号密码
+                            username_et.setText(sp.getString("username_location", ""));
+                            password_et.setText(sp.getString("password_location", ""));
                             //ConstantClass.URL = ConstantClass.location;
                         }
                         break;
@@ -281,6 +300,9 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
                             editor = sp.edit();
                             editor.putString("URL", ConstantClass.oil_fill);
                             editor.commit();
+                            //设置定位平台的账号密码
+                            username_et.setText(sp.getString("username_oilFill", ""));
+                            password_et.setText(sp.getString("password_oilFill", ""));
                             //ConstantClass.URL= ConstantClass.oil_fill;
                         }
                         break;
@@ -295,9 +317,6 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
         radioButton_oil_fill.setOnClickListener(this);
 
         //SharedPreferences sp = Login.this.getSharedPreferences("login_state", 0);
-
-        username_et.setText(sp.getString("username", ""));
-        password_et.setText(sp.getString("password", ""));
 
         //登录按钮点击监听事件
         login.setOnClickListener(Login.this);
@@ -369,10 +388,10 @@ public class Login extends Activity implements View.OnClickListener, View.OnFocu
                 break;
             case R.id.password_remember:
                 if (password_remember.isChecked()){
-                password_remember.setChecked(true);
-            }else {
-                password_remember.setChecked(false);
-            }
+                    password_remember.setChecked(true);
+                }else {
+                    password_remember.setChecked(false);
+                }
                 Message msg = new Message();
                 msg.what = PASSWORD_REMEMBER;
                 mHandler.sendMessage(msg);

@@ -172,8 +172,8 @@ public class MonitorOnLine extends Activity implements View.OnClickListener {
 //                                }
 //                            yValue1 = new ArrayList<>();
 //                            xValues = new ArrayList<>();
-
-                            for (int i = 0; i < jsonArrayVehicles.length(); i++) {
+                            int len = jsonArrayVehicles.length();
+                            for (int i = 0; i < len; i++) {
                                 JSONObject json = (JSONObject) jsonArrayVehicles.opt(i);
                                 String create_time = json.getString("create_time");
                                 String vehicle_online_num = json.getString("vehicle_online_num");
@@ -214,13 +214,20 @@ public class MonitorOnLine extends Activity implements View.OnClickListener {
                                     } else {
                                         //Logs.e("1----------", "查询最新");
                                         if (xValues.size() > 0) {
-                                            if (!(time.equals(xValues.get(y - 1)))) {
-                                                //Logs.e("1----------", "查询size()>0");
-                                                xValues.add(time);
-                                                yValue1.add(new Entry(online_num, y));
-                                                y = y + 1;
-                                            } else {
-                                                return;
+                                            Date date = new Date();
+                                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d");
+                                            String data = formatter.format(date);
+                                            if (!tv_online_date.getText().equals(data)){
+
+                                            }else {
+                                                if (!(time.equals(xValues.get(y - 1)))) {
+                                                    //Logs.e("1----------", "查询size()>0");
+                                                    xValues.add(time);
+                                                    yValue1.add(new Entry(online_num, y));
+                                                    y = y + 1;
+                                                } else {
+                                                    return;
+                                                }
                                             }
                                         }
                                     }
@@ -285,7 +292,8 @@ public class MonitorOnLine extends Activity implements View.OnClickListener {
                             tv_noData.setVisibility(View.GONE);
                             mVehicleOnlineListViewAdapter = new VehicleOnlineListViewAdapter(MonitorOnLine.this, mOnlineListViewData);
                             mLv_vehicle_online.setAdapter(mVehicleOnlineListViewAdapter);
-                            mVehicleOnlineListViewAdapter.notifyDataSetChanged();
+
+                            //mVehicleOnlineListViewAdapter.notifyDataSetChanged();
                         } else {
                             ToastUtils.showToast(MonitorOnLine.this, "暂无车辆信息");
                             //listview 提示暂无数据...
@@ -392,7 +400,7 @@ public class MonitorOnLine extends Activity implements View.OnClickListener {
         layout_online_date.setOnClickListener(this);
         //默认日期
         Date date = new Date();
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-M-d");
         dates = formatter.format(date);
         tv_online_date.setText(dates);
 
@@ -453,7 +461,7 @@ public class MonitorOnLine extends Activity implements View.OnClickListener {
                     }
                 });
             }
-        }, 1, 2 * 60 * 1000);
+        }, 1, 5 * 60 * 1000);
     }
 
     /**
@@ -695,7 +703,7 @@ public class MonitorOnLine extends Activity implements View.OnClickListener {
         int m = 0;
         int d = 0;
         try {
-            Date date = new SimpleDateFormat("yyyy-MM-dd").parse(tv_online_date.getText().toString());
+            Date date = new SimpleDateFormat("yyyy-M-d").parse(tv_online_date.getText().toString());
             Calendar c1 = Calendar.getInstance();
             c1.setTime(date);
             year = c1.get(Calendar.YEAR);
