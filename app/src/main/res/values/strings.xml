@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">三得北斗定位</string>
+    <string name="login">登    录</string>
+    <string name="login_username">     请输入用户名</string>
+    <string name="login_password">     请输入密码</string>
+    <string name="login_username_reginter">     请输入用户名（最多11位字符）</string>
+    <string name="login_password_reginter">     请输入密码(最多16位字符）</string>
+    <string name="password_forget">修改密码？</string>
+    <string name="register">立即注册</string>
+    <string name="monitor_bar">车辆在线信息</string>
+    <string name="quit_login">退出登录</string>
+</resources>

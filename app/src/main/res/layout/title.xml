@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/bule">
+
+        <ImageView
+            android:id="@+id/title_break"
+            android:layout_width="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_break"
+            />
+
+        <TextView
+            android:id="@+id/title_context"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:textSize="18dp"
+            android:textColor="#FFFFFF" />
+
+        <ImageView
+            android:id="@+id/title_search"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@mipmap/ic_screen"
+            android:visibility="gone"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginEnd="8dp" />
+    </RelativeLayout>
+</LinearLayout>

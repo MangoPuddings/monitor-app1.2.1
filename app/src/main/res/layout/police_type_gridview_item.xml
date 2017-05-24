@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/layout_police_type_item"
+    android:layout_height="40dp"
+    android:orientation="horizontal"
+    android:background="@drawable/police_type6">
+    <TextView
+        android:id="@+id/tv_police_type_item"
+        android:layout_width="0dp"
+        android:layout_height="40dp"
+        android:layout_weight="8"
+        android:gravity="center"
+        android:textSize="14dp" />
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="left|center"
+        android:src="@mipmap/ic_cancel1"/>
+</LinearLayout>

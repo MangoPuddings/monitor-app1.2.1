@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="30dp"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/lv_item"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_vehicleNo"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_vehicle_owner"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_vehicle_times1"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_times2"
+            android:layout_width="200dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_times3"
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_times4"
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_times5"
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_times6"
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+        <TextView
+            android:id="@+id/tv_vehicle_times7"
+            android:layout_width="100dp"
+            android:gravity="center"
+            android:layout_height="30dp" />
+
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginTop="10dp"
+        android:background="#FFFFFF"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center|left"
+            android:text="车辆掉线报警" />
+
+        <ImageView
+            android:id="@+id/ivSwitch"
+            android:layout_width="55dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:src="@mipmap/ic_switch_close" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_onlineRate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#FFFFFF"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="车辆在线率低于" />
+
+            <EditText
+                android:id="@+id/et_online_rate1"
+                android:layout_width="0dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:background="@drawable/online_rate_set"
+                android:digits="1234567890"
+                android:gravity="end|center"
+                android:inputType="phone|number"
+                android:maxLength="3"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:textSize="16dp"
+                android:textColor="#EA9325" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="%报警" />
+
+            <TextView
+                android:id="@+id/tv_data_start1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:gravity="center|left"
+                android:text="00:00"
+                android:textColor="#28B4F1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|left"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/tv_data_end1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|left"
+                android:text="23:59"
+                android:textColor="#28B4F1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#FFFFFF"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="车辆在线率低于" />
+
+            <EditText
+                android:id="@+id/et_online_rate2"
+                android:layout_width="0dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:background="@drawable/online_rate_set"
+                android:digits="1234567890"
+                android:gravity="end|center"
+                android:inputType="phone|number"
+                android:maxLength="3"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:textSize="16dp"
+                android:textColor="#EA9325" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="%报警" />
+
+            <TextView
+                android:id="@+id/tv_data_start2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:gravity="center|left"
+                android:text="00:00"
+                android:textColor="#28B4F1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|left"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/tv_data_end2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|left"
+                android:text="23:59"
+                android:textColor="#28B4F1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="15dp"
+            android:background="#FFFFFF"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="车辆在线率低于" />
+
+            <EditText
+                android:id="@+id/et_online_rate3"
+                android:layout_width="0dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center"
+                android:layout_weight="0.5"
+                android:background="@drawable/online_rate_set"
+                android:digits="1234567890"
+                android:gravity="end|center"
+                android:inputType="phone|number"
+                android:maxLength="3"
+                android:paddingRight="5dp"
+                android:singleLine="true"
+                android:textSize="16dp"
+                android:textColor="#EA9325" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center|left"
+                android:text="%报警" />
+
+            <TextView
+                android:id="@+id/tv_data_start3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="30dp"
+                android:gravity="center|left"
+                android:text="00:00"
+                android:textColor="#28B4F1" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|left"
+                android:text="-" />
+
+            <TextView
+                android:id="@+id/tv_data_end3"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="5dp"
+                android:gravity="center|left"
+                android:text="23:59"
+                android:textColor="#28B4F1" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="20dp"
+            android:background="#FFFFFF">
+
+            <TextView
+                android:id="@+id/tv_complete"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/online_rate_set_complete"
+                android:gravity="center"
+                android:text="完  成"
+                android:textColor="#F2983E"
+                android:textSize="16dp" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

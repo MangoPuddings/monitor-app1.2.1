@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="left"
+    android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/iv_state"
+        android:layout_width="25dp"
+        android:layout_marginLeft="40dp"
+        android:layout_height="match_parent"/>
+    <TextView
+        android:id="@+id/tv_vehicle_name"
+        android:layout_width="wrap_content"
+        android:layout_height="38dp"
+        android:layout_marginLeft="5dp"
+        android:textSize="17dp"
+        android:textColor="#746931"
+        android:layout_gravity="center"
+        android:gravity="center" />
+</LinearLayout>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+
+            <LinearLayout
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="28dp"
+                    android:layout_marginTop="5dp"
+                    android:textSize="16dp"
+                    android:text="车队"
+                    android:textColor="#369874"
+                    android:gravity="center"/>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#748596"/>
+                <ListView
+                    android:id="@+id/lv_queue"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:dividerHeight="0.5dp">
+                </ListView>
+            </LinearLayout>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="#746931"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/dialog_vehicle_date_change">
+                    <EditText
+                        android:id="@+id/edit_vehicle_search"
+                        android:layout_width="0dp"
+                        android:layout_weight="12"
+                        android:layout_height="28dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="@null"
+                        android:singleLine="true"
+                        android:paddingLeft="8dp"
+                        android:hint="请输入需要查询的车辆..."
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="14dp"
+                        android:layout_marginRight="5dp" />
+                    <ImageView
+                        android:id="@+id/iv_search_del"
+                        android:layout_width="28dp"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/ic_monitor_vehicle_search"
+                        android:visibility="invisible"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.3dp"
+                    android:layout_marginTop="5dp"
+                    android:background="#748596"/>
+
+                <LinearLayout
+                    android:id="@+id/layout_vehicle"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp">
+                </LinearLayout>
+            </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

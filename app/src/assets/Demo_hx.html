@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>亿盟恒信 BNT4000HD 视频播放</title>
+    <script type="text/javascript">
+        var serverIp = "";//3G服务器IP地址
+        var port = 9015;//端口号
+        var phoneNum = "";//终端电话号码
+        var channel = 1;//通道
+        var user = "";//用户名
+        var pwd = "";//密码
+        var isFull = 0;//是否全屏模式
+        var isGettingVideo = 0; //是否正在录像
+        var path = "C:\\"; //抓图、录像保存路径
+        var video;//视频控件
+        function connect()
+        {
+            serverIp = document.getElementById("serverIp").value;
+            port = document.getElementById("port").value;
+            user = document.getElementById("userName").value;
+            pwd = document.getElementById("password").value;
+            path = document.getElementById("savePath").value;
+            if (path.charAt(path.length -1) != '\\')
+            {
+                path += "\\";
+            }
+            var re = video.Connect(serverIp, port, user, pwd);
+            if (re == 0)
+            {
+                alert("连接成功！");
+            }
+            else
+            {
+                alert("连接失败！");
+            }
+
+        }
+        function disConnect()
+        {
+            video.DisConnect();
+        }
+        function play()
+        {
+            phoneNum = document.getElementById("phoneNum").value;
+            channel = document.getElementById("channel").selectedIndex;
+            var re = video.BeginVideo(phoneNum + "", channel);
+            if (re == 0)
+            {
+                document.getElementById("oper").disabled = "";
+            }
+            else
+            {
+                alert("播放失败！");
+            }
+            
+        }
+
+        function getPhoto()
+        {
+            var photoPath = path + new Date().Format("yyyyMMddHHmmss") + ".bmp";
+            var re = video.CaptureToFile(photoPath);
+            if (re == 0)
+            {
+                alert("拍照成功！");
+            }
+            else
+            {
+                alert("拍照失败！");
+            }
+            
+        }
+
+        function startGetVideo()
+        {
+            var videoPath = path + new Date().Format("yyyyMMddHHmmss") + ".avi";
+            var re = video.BeginRecord(videoPath);
+            if (re == 0)
+            {
+                alert("开始录像成功！");
+                document.getElementById("stopGetVideo").disabled = "";
+                document.getElementById("startGetVideo").disabled = "disabled";
+            }
+            else
+            {
+                alert("录像失败！");
+            }
+        }
+
+        function stropGetVideo()
+        {
+            var re = video.EndRecord("");
+            if (re == 0)
+            {
+                alert("停止录像成功！");
+                document.getElementById("stopGetVideo").disabled = "disabled";
+                document.getElementById("startGetVideo").disabled = "";
+            }
+            else
+            {
+                alert("停止录像失败！");
+            }
+        }
+
+        function Close()
+        {
+            video.EndVideo();
+            document.getElementById("oper").disabled = "disabled";
+        }
+        //---------------------------------------------------  
+        // 日期格式化  
+        // 格式 YYYY/yyyy/YY/yy 表示年份  
+        // MM/M 月份  
+        // W/w 星期  
+        // dd/DD/d/D 日期  
+        // hh/HH/h/H 时间  
+        // mm/m 分钟  
+        // ss/SS/s/S 秒  
+        //---------------------------------------------------  
+        Date.prototype.Format = function (formatStr)
+        {
+            var str = formatStr;
+            var Week = ['日', '一', '二', '三', '四', '五', '六'];
+
+            str = str.replace(/yyyy|YYYY/, this.getFullYear());
+            str = str.replace(/yy|YY/, (this.getYear() % 100) > 9 ? (this.getYear() % 100).toString() : '0' + (this.getYear() % 100));
+
+            str = str.replace(/MM/, this.getMonth() > 9 ? this.getMonth().toString() : '0' + this.getMonth());
+            str = str.replace(/M/g, this.getMonth());
+
+            str = str.replace(/w|W/g, Week[this.getDay()]);
+
+            str = str.replace(/dd|DD/, this.getDate() > 9 ? this.getDate().toString() : '0' + this.getDate());
+            str = str.replace(/d|D/g, this.getDate());
+
+            str = str.replace(/hh|HH/, this.getHours() > 9 ? this.getHours().toString() : '0' + this.getHours());
+            str = str.replace(/h|H/g, this.getHours());
+            str = str.replace(/mm/, this.getMinutes() > 9 ? this.getMinutes().toString() : '0' + this.getMinutes());
+            str = str.replace(/m/g, this.getMinutes());
+            str = str.replace(/ss|SS/, this.getSeconds() > 9 ? this.getSeconds().toString() : '0' + this.getSeconds());
+            str = str.replace(/s|S/g, this.getSeconds());
+            return str;
+        }   
+        window.onload = function ()
+        {
+            video = document.getElementById("ViewControl");
+            video.attachEvent("OnPlayerReady", function (n) { video.Play(); });
+            video.attachEvent("OnViewDblClick", function (n) { if (isFull) { video.SetFullScreen(0); isFull = 0; } else { video.SetFullScreen(1); isFull = 1; } });
+            video.SetConnectMode(1)
+            video.SetPlayMode(0);
+            video.SetMuteMode(0);
+            video.SetViewMode(1);
+        }
+    </script>
+</head>
+<body >
+    <div style=" width:450px; height:350px; margin:1px; float:left;">
+        <object id="ViewControl" width="100%" height="100%" classid="CLSID:A7C417D0-1B9F-4E7E-A0F9-09D6DE11D6BF"></object>
+    </div>
+    <div id="setting" style="float:left; margin:10px;">
+        <table>
+            <tr>
+                <td>服务器IP：</td>
+                <td><input id="serverIp" type="text" value="182.140.141.39" style=" width:100px;" /></td>
+                <td>端口号：</td>
+                <td><input id="port" type="text" value="9015" style=" width:50px;" /></td>
+            </tr>
+            <tr>
+                <td>终端ID：</td>
+                <td><input id="phoneNum" value="017703815207" type="text" style=" width:100px;" /></td>
+                <td>通道：</td>
+                <td>
+                    <select id="channel">
+                        <option>00</option>
+                        <option selected="selected">01</option>
+                        <option>02</option>
+                        <option>03</option>
+                        <option>04</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>用户名：</td>
+                <td><input id="userName" type="text" style=" width:100px;" value='admin' /></td>
+                <td>密码：</td>
+                <td><input id="password" type="password" style=" width:100px;"  value='12345'/></td>
+            </tr>
+            <tr>
+                <td colspan="4">抓图、录像保存路径：<input id="savePath" type="text" value="C:\" /></td>
+            </tr>
+            <tr>
+                <td><input type="button" value="连接" onclick="connect()" style="" /></td>
+                <td><input type="button" value="播放" onclick="play()" style="" /></td>
+                <td><input type="button" value="断开连接" onclick="disConnect()" style="" /></td>
+                <td></td>
+            </tr>
+        </table>
+    </div>
+    <div style=" clear:both;"></div>
+    <div id="oper" disabled="disabled" style="padding:10px" >
+        <input type="button" onclick="getPhoto()" value="拍照" />
+        <input id="startGetVideo" onclick="startGetVideo()" type="button" value="开始录像" />
+        <input id="stopGetVideo" onclick="stropGetVideo()" type="button" value="停止录像" disabled="disabled" />
+        <input type="button" onclick="Close()" value="关闭视频" />
+    </div>
+    
+    
+</body>
+</html>
