@@ -90,7 +90,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
-                android:text="所属车队:"
+                android:text="所属业户:"
                 android:textSize="12dp"
                 android:textColor="#746931"
                 android:gravity="center|left"/>

@@ -81,10 +81,13 @@ public class Date extends Fragment {
                         });
                         if (map.get("result").equals("0")) {
                             //是否有缓存数据，如果等于null则写入缓存
-                            if (mCache.getAsString("data_miles" + page) == null) {
+                            java.util.Date dates = new java.util.Date();
+                            SimpleDateFormat formats = new SimpleDateFormat("yyyy-MM-dd");
+                            String name = formats.format(dates);
+                            if (mCache.getAsString(sp.getString("URL","") + "data_miles" + name) == null) {
                                 //读取缓存数据
                                 //写入缓存
-                                mCache.put("data_miles", msg.obj.toString(), ConstantClass.aCacheTime);
+                                mCache.put(sp.getString("URL","") + "data_miles" + name, msg.obj.toString(), ConstantClass.aCacheTimeD);
                             }
                             String[] date = new String[8];
                             for (int d = 0; d < 8; d++) {
@@ -169,9 +172,12 @@ public class Date extends Fragment {
                         //获取车辆是否存在的状态码 0（存在） -1（不存在）
                         String result = jsonObjects.getString("result");
                         if (result.equals("0")) {
-                            if (mCache.getAsString("data_miles" + page) == null) {
+                            java.util.Date dates = new java.util.Date();
+                            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                            String name = format.format(dates);
+                            if (mCache.getAsString(sp.getString("URL","") + "data_miles" + name + page) == null) {
                                 //读取缓存数据 //写入缓存
-                                mCache.put("data_miles" + (page - 20), msg.obj.toString(), ConstantClass.aCacheTime);
+                                mCache.put(sp.getString("URL","") + "data_miles" + name + (page - 20), msg.obj.toString(), ConstantClass.aCacheTimeD);
                             }
                             //如果返回状态码为0，则解析车辆信息
                             JSONArray jsonArrayVehicles = jsonObjects.getJSONArray("vehicles");
@@ -247,7 +253,7 @@ public class Date extends Fragment {
      * 初始化控件
      */
     private void initView() {
-
+        sp = view.getContext().getSharedPreferences("login_state", view.getContext().MODE_PRIVATE);
         CHScrollViewDate headerScroll = (CHScrollViewDate) view.findViewById(R.id.item_scroll_title);
         //添加头滑动事件
         mHScrollViews.add(headerScroll);
@@ -357,10 +363,13 @@ public class Date extends Fragment {
      */
     private void getHttpdate(int page, int rows) {
         mCache = ACache.get(getActivity());
-        if (mCache.getAsString("data_miles") != null) {
+        java.util.Date dates = new java.util.Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String name = format.format(dates);
+        if (mCache.getAsString(sp.getString("URL","") + "data_miles" + name) != null) {
             //读取缓存数据，更新ui
             Message msg = new Message();
-            msg.obj = mCache.getAsString("data_miles");
+            msg.obj = mCache.getAsString(sp.getString("URL","") + "data_miles" + name);
             msg.what = 0;
             handler.sendMessage(msg);
         } else {   //本地缓存数据不存在或者过期，则请求服务器数据
@@ -400,10 +409,13 @@ public class Date extends Fragment {
      * 获取服务器车辆里程数据(分页加载数据）
      */
     private void getHttpdates(int page, int rows) {
-        if (mCache.getAsString("data_miles" + page) != null) {
+        java.util.Date dates = new java.util.Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String name = format.format(dates);
+        if (mCache.getAsString(sp.getString("URL","") + "data_miles" + name + page) != null) {
             //读取缓存数据，更新ui
             Message msg = new Message();
-            msg.obj = mCache.getAsString("data_miles" + page);
+            msg.obj = mCache.getAsString(sp.getString("URL","") + "data_miles" + name + page);
             msg.what = 2;
             handler.sendMessage(msg);
         } else {

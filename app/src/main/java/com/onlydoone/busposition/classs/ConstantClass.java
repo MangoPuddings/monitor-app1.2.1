@@ -102,6 +102,9 @@ public class ConstantClass {
     //报警类型数量
     public static int num = 0;
 
-    //缓存有效时间（单位 秒s）
-    public static int aCacheTime = 6 * 60 * 60;
+    //按天查询缓存有效时间（单位 秒s）
+    public static int aCacheTimeD = 24 * 60 * 60;
+
+    //按月查询缓存有效时间（单位 秒s）
+    public static int aCacheTimeM = 31 * 24 * 60 * 60;
 }
